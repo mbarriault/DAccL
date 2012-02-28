@@ -18,10 +18,10 @@
 		6C4944A714FD21C200481A91 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		6C4944A814FD21C200481A91 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		6C4944A914FD21C200481A91 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		6C4944AC14FD21C200481A91 /* DAccL-Info.plist */ = {isa = PBXFileReference; path = "DAccL-Info.plist"; sourceTree = "<group>"; };
+		6C4944AC14FD21C200481A91 /* DAccL-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "DAccL-Info.plist"; sourceTree = "<group>"; };
 		6C4944AE14FD21C200481A91 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		6C4944B014FD21C200481A91 /* DAccL-Prefix.pch */ = {isa = PBXFileReference; path = "DAccL-Prefix.pch"; sourceTree = "<group>"; };
-		6C4944B114FD21C200481A91 /* DAccL.h */ = {isa = PBXFileReference; path = DAccL.h; sourceTree = "<group>"; };
+		6C4944B014FD21C200481A91 /* DAccL-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "DAccL-Prefix.pch"; sourceTree = "<group>"; };
+		6C4944B114FD21C200481A91 /* DAccL.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DAccL.h; sourceTree = "<group>"; };
 		6C4944B214FD21C200481A91 /* DAccL.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DAccL.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
