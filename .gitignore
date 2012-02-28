@@ -4,3 +4,9 @@ DAccL.xcodeproj/project.xcworkspace/xcuserdata/mbarriault.xcuserdatad/UserInterf
 DAccL.xcodeproj/xcuserdata/mbarriault.xcuserdatad/xcschemes/DAccL.xcscheme
 
 DAccL.xcodeproj/xcuserdata/mbarriault.xcuserdatad/xcschemes/xcschememanagement.plist
+
+daux.o
+
+ddassl.o
+
+dlinpk.o

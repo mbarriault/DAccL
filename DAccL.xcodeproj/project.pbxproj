@@ -10,6 +10,9 @@
 		6C4944A514FD21C200481A91 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6C4944A414FD21C200481A91 /* Cocoa.framework */; };
 		6C4944AF14FD21C200481A91 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6C4944AD14FD21C200481A91 /* InfoPlist.strings */; };
 		6C4944B314FD21C200481A91 /* DAccL.m in Sources */ = {isa = PBXBuildFile; fileRef = 6C4944B214FD21C200481A91 /* DAccL.m */; };
+		6C4944C314FD22B000481A91 /* daux.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 6C4944C014FD229B00481A91 /* daux.o */; };
+		6C4944C414FD22B800481A91 /* ddassl.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 6C4944C114FD229B00481A91 /* ddassl.o */; };
+		6C4944C514FD22BC00481A91 /* dlinpk.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 6C4944C214FD229B00481A91 /* dlinpk.o */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -23,6 +26,12 @@
 		6C4944B014FD21C200481A91 /* DAccL-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "DAccL-Prefix.pch"; sourceTree = "<group>"; };
 		6C4944B114FD21C200481A91 /* DAccL.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DAccL.h; sourceTree = "<group>"; };
 		6C4944B214FD21C200481A91 /* DAccL.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DAccL.m; sourceTree = "<group>"; };
+		6C4944BA14FD228700481A91 /* daux.f */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.fortran; path = daux.f; sourceTree = "<group>"; };
+		6C4944BB14FD228700481A91 /* ddassl.f */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.fortran; path = ddassl.f; sourceTree = "<group>"; };
+		6C4944BC14FD228700481A91 /* dlinpk.f */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.fortran; path = dlinpk.f; sourceTree = "<group>"; };
+		6C4944C014FD229B00481A91 /* daux.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = daux.o; sourceTree = "<group>"; };
+		6C4944C114FD229B00481A91 /* ddassl.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = ddassl.o; sourceTree = "<group>"; };
+		6C4944C214FD229B00481A91 /* dlinpk.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = dlinpk.o; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -31,6 +40,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				6C4944A514FD21C200481A91 /* Cocoa.framework in Frameworks */,
+				6C4944C314FD22B000481A91 /* daux.o in Frameworks */,
+				6C4944C414FD22B800481A91 /* ddassl.o in Frameworks */,
+				6C4944C514FD22BC00481A91 /* dlinpk.o in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -40,6 +52,7 @@
 		6C49449514FD21C100481A91 = {
 			isa = PBXGroup;
 			children = (
+				6C4944B914FD226400481A91 /* DASSL */,
 				6C4944AA14FD21C200481A91 /* DAccL */,
 				6C4944A314FD21C200481A91 /* Frameworks */,
 				6C4944A214FD21C200481A91 /* Products */,
@@ -91,6 +104,19 @@
 				6C4944B014FD21C200481A91 /* DAccL-Prefix.pch */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		6C4944B914FD226400481A91 /* DASSL */ = {
+			isa = PBXGroup;
+			children = (
+				6C4944C014FD229B00481A91 /* daux.o */,
+				6C4944C114FD229B00481A91 /* ddassl.o */,
+				6C4944C214FD229B00481A91 /* dlinpk.o */,
+				6C4944BA14FD228700481A91 /* daux.f */,
+				6C4944BB14FD228700481A91 /* ddassl.f */,
+				6C4944BC14FD228700481A91 /* dlinpk.f */,
+			);
+			name = DASSL;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
