@@ -58,6 +58,7 @@
 		6C4944DF14FD250000481A91 /* libgfortran.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgfortran.a; path = "../../../../usr/local/Cellar/gfortran/4.2.4-5666.3/lib/gcc/i686-apple-darwin11/4.2.1/libgfortran.a"; sourceTree = "<group>"; };
 		6C4944E114FD50C300481A91 /* Function.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Function.h; sourceTree = "<group>"; };
 		6C4944E314FD534C00481A91 /* System.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = System.h; sourceTree = "<group>"; };
+		6C4944E514FE7E8100481A91 /* README.markdown */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.markdown; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -87,6 +88,7 @@
 		6C49449514FD21C100481A91 = {
 			isa = PBXGroup;
 			children = (
+				6C4944E514FE7E8100481A91 /* README.markdown */,
 				6C4944DF14FD250000481A91 /* libgfortran.a */,
 				6C4944DB14FD24E300481A91 /* libgcc.a */,
 				6C4944DC14FD24E300481A91 /* libgfortranbegin.a */,
