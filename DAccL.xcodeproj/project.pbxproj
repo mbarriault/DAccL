@@ -13,13 +13,12 @@
 		6C4944C514FD22BC00481A91 /* dlinpk.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 6C4944C214FD229B00481A91 /* dlinpk.o */; };
 		6C4944C714FD236400481A91 /* Tuple.h in Headers */ = {isa = PBXBuildFile; fileRef = 6C4944C614FD236400481A91 /* Tuple.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6C4944CA14FD23F800481A91 /* Array.h in Headers */ = {isa = PBXBuildFile; fileRef = 6C4944C814FD23B100481A91 /* Array.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		6C4944CB14FD23FC00481A91 /* Object.h in Headers */ = {isa = PBXBuildFile; fileRef = 6C4944C914FD23E700481A91 /* Object.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		6C4944CB14FD23FC00481A91 /* Core.h in Headers */ = {isa = PBXBuildFile; fileRef = 6C4944C914FD23E700481A91 /* Core.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6C4944D414FD240F00481A91 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6C4944D314FD240F00481A91 /* main.cpp */; };
 		6C4944D614FD240F00481A91 /* Test.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6C4944D514FD240F00481A91 /* Test.1 */; };
 		6C4944DA14FD242200481A91 /* DAccL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6C4944A114FD21C200481A91 /* DAccL.framework */; };
 		6C4944DD14FD24E300481A91 /* libgcc.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6C4944DB14FD24E300481A91 /* libgcc.a */; };
 		6C4944E014FD250000481A91 /* libgfortran.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6C4944DF14FD250000481A91 /* libgfortran.a */; };
-		6C4944E214FD50C300481A91 /* Function.h in Headers */ = {isa = PBXBuildFile; fileRef = 6C4944E114FD50C300481A91 /* Function.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6C4944E414FD534C00481A91 /* System.h in Headers */ = {isa = PBXBuildFile; fileRef = 6C4944E314FD534C00481A91 /* System.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
@@ -49,14 +48,13 @@
 		6C4944C214FD229B00481A91 /* dlinpk.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = dlinpk.o; sourceTree = "<group>"; };
 		6C4944C614FD236400481A91 /* Tuple.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Tuple.h; sourceTree = "<group>"; };
 		6C4944C814FD23B100481A91 /* Array.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Array.h; sourceTree = "<group>"; };
-		6C4944C914FD23E700481A91 /* Object.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Object.h; sourceTree = "<group>"; };
+		6C4944C914FD23E700481A91 /* Core.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Core.h; sourceTree = "<group>"; };
 		6C4944D014FD240F00481A91 /* Test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Test; sourceTree = BUILT_PRODUCTS_DIR; };
 		6C4944D314FD240F00481A91 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		6C4944D514FD240F00481A91 /* Test.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = Test.1; sourceTree = "<group>"; };
 		6C4944DB14FD24E300481A91 /* libgcc.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgcc.a; path = "../../../../usr/local/Cellar/gfortran/4.2.4-5666.3/lib/gcc/i686-apple-darwin11/4.2.1/libgcc.a"; sourceTree = "<group>"; };
 		6C4944DC14FD24E300481A91 /* libgfortranbegin.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgfortranbegin.a; path = "../../../../usr/local/Cellar/gfortran/4.2.4-5666.3/lib/gcc/i686-apple-darwin11/4.2.1/libgfortranbegin.a"; sourceTree = "<group>"; };
 		6C4944DF14FD250000481A91 /* libgfortran.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgfortran.a; path = "../../../../usr/local/Cellar/gfortran/4.2.4-5666.3/lib/gcc/i686-apple-darwin11/4.2.1/libgfortran.a"; sourceTree = "<group>"; };
-		6C4944E114FD50C300481A91 /* Function.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Function.h; sourceTree = "<group>"; };
 		6C4944E314FD534C00481A91 /* System.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = System.h; sourceTree = "<group>"; };
 		6C4944E514FE7E8100481A91 /* README.markdown */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.markdown; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -119,10 +117,9 @@
 		6C4944AA14FD21C200481A91 /* DAccL */ = {
 			isa = PBXGroup;
 			children = (
-				6C4944C914FD23E700481A91 /* Object.h */,
+				6C4944C914FD23E700481A91 /* Core.h */,
 				6C4944C814FD23B100481A91 /* Array.h */,
 				6C4944C614FD236400481A91 /* Tuple.h */,
-				6C4944E114FD50C300481A91 /* Function.h */,
 				6C4944E314FD534C00481A91 /* System.h */,
 				6C4944AB14FD21C200481A91 /* Supporting Files */,
 			);
@@ -168,10 +165,9 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6C4944CB14FD23FC00481A91 /* Object.h in Headers */,
+				6C4944CB14FD23FC00481A91 /* Core.h in Headers */,
 				6C4944CA14FD23F800481A91 /* Array.h in Headers */,
 				6C4944C714FD236400481A91 /* Tuple.h in Headers */,
-				6C4944E214FD50C300481A91 /* Function.h in Headers */,
 				6C4944E414FD534C00481A91 /* System.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -407,6 +403,7 @@
 				6C4944B814FD21C200481A91 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		6C4944D714FD240F00481A91 /* Build configuration list for PBXNativeTarget "Test" */ = {
 			isa = XCConfigurationList;
@@ -415,6 +412,7 @@
 				6C4944D914FD240F00481A91 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

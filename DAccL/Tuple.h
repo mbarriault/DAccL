@@ -11,10 +11,13 @@
 #ifndef DAccL_Tuple_h
 #define DAccL_Tuple_h
 
-#include "Array.h"
+#include "Core.h"
+#include <vector>
 
-class Tuple : public Array<long> {
+class Tuple : public std::vector<long> {
 public:
+    Tuple() {}
+    
     Tuple(long n, ...) {
         va_list args;
         va_start(args, n);

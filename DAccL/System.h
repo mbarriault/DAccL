@@ -9,7 +9,8 @@
 #ifndef DAccL_System_h
 #define DAccL_System_h
 
-#include "Function.h"
+#include "Array.h"
+#include <iostream>
 
 extern "C" void ddassl_(
                         void (*funcptr)(const real& time, const real y[], const real yPrime[], real residue[], int& iRes, const real rPar[], const int iPar[]),
@@ -22,64 +23,127 @@ extern "C" void ddassl_(
                         const real& relativeTolerance,
                         const real& absoluteTolerance,
                         int& outputStatusFlag,
-                        const real dWorkArray[], 
-                        const int& lengthOfDWork,
+                        const real rWorkArray[], 
+                        const int& lengthOfrWork,
                         const int iWorkArray[], 
                         const int& lengthOfIWork,
                         const real rParArray[],
                         const int iParArray[],
-                        void (*jacobian)(const real& time, const real y[], const real yPrime[], real** PD, real& CJ, real rPar[], int iPar[])
+                        void (*jacobian)(const real& time, const real y[], const real yPrime[], real PD[], real& CJ, real rPar[], int iPar[])
                         );
 
 extern "C" void whaththe_(const int& x);
 
-class System : public Object {
+class System {
 public:
-    Function Y;
-    Function Z; // Z = D(Y)(t)
-    Function Res; // G(t,Y,Z) = Res
+    Tuple N;
+    Array<real> Y;
+    Array<real> Z; // Z = D(Y)(t)
+    Array<real> Res; // G(t,Y,Z) = Res
     Array<int> info;
     real currentTime;
     real finalTime;
     real relativeTolerance;
     real absoluteTolerance;
     int outputStatusFlag;
-    Array<real> dWork; // LRW .GE. 40+(MAXORD+4)*NEQ+(2*ML+MU+1)*NEQ+2*(NEQ/(ML+MU+1)+1)
+    Array<real> rWork; // LRW .GE. 40+(MAXORD+4)*NEQ+(2*ML+MU+1)*NEQ+2*(NEQ/(ML+MU+1)+1)
                        // MAXORD is the maximum order, apparently 5 is fastest but takes up most memory. Don't think memory is an issue on modern machines so much.
                        // NEQ = N[0]
                        // ML/MU How many points from i (being centre) must one go - ie, three-point derivatives involve three points, so ML=MU=1
     Array<int> iWork; // 20+NEQ
     Array<real> rPar;
     Array<int> iPar;
-    virtual void Residue(const real& time, const real y[], const real yPrime[], real residue[], int& iRes, const real rPar[], const int iPar[]) = 0;
-    virtual void Jacobian(const real& time, const real y[], const real yPrime[], real** PD, real& CJ, real rPar[], int iPar[]) = 0;
+    //virtual void Residue(const real& time, const real y[], const real yPrime[], real residue[], int& iRes, const real rPar[], const int iPar[]) = 0;
+    //virtual void Jacobian(const real& time, const real y[], const real yPrime[], real PD[], real& CJ, real rPar[], int iPar[]) = 0;
+    virtual void Residue(const real& time, const Array<real>& y, const Array<real>& yPrime, Array<real>& residue, int& iRes) = 0;
+    virtual void Jacboian(const real& time, const Array<real>& y, const Array<real>& yPrime, Array<real>& PD, real& CJ) = 0;
     
     static System* system;
     
-    System(Tuple N = Tuple(1,0)) {
+    System(Tuple N = Tuple(1,1)) : N(N) {
         System::system = this;
-        Y = Function(N);
-        Z = Function(N);
-        Res = Function(N);
-        info.assign(15, 0);
+        Y = Array<real>(N);
+        Z = Array<real>(N);
+        Res = Array<real>(N);
+        info.assign(15);
         currentTime = 0;
         finalTime = 0;
         relativeTolerance = 1e-6;
-        absoluteTolerance = 1e-6;
+        absoluteTolerance = 0.;
         outputStatusFlag = 0;
-        dWork.assign(40 + (5+4)*N[0] + (2*1 + 1 + 1)*N[0] + 2*(N[0] / (1 + 1 + 1) + 1), 0.);
-        iWork.assign(20 + N[0], 0);
+        rWork.assign(40 + (5+4)*N[0] + (2*1 + 1 + 1)*N[0] + 2*(N[0] / (1 + 1 + 1) + 1));
+        iWork.assign(20 + N[0]);
     }
     
     static void Residue_Wrapper(const real& time, const real y[], const real yPrime[], real residue[], int& iRes, const real rPar[], const int iPar[]) {
-        system->Residue(time, y, yPrime, residue, iRes, rPar, iPar);
+        //system->Residue(time, y, yPrime, residue, iRes, rPar, iPar);
+        Tuple& N = system->N;
+        Array<real> res(N,residue);
+        system->Residue(time, Array<real>(N,y), Array<real>(N,yPrime), res, iRes);
     }
-    static void Jacobian_Wrapper(const real& time, const real y[], const real yPrime[], real** PD, real& CJ, real rPar[], int iPar[]) {
-        system->Jacobian(time, y, yPrime, PD, CJ, rPar, iPar);
+    static void Jacobian_Wrapper(const real& time, const real y[], const real yPrime[], real PD[], real& CJ, real rPar[], int iPar[]) {
+        //system->Jacobian(time, y, yPrime, PD, CJ, rPar, iPar);
+        Tuple& N = system->N;
+        Tuple M = N;
+        M.insert(M.begin(), N[0]);
+        Array<real> Jac(M,PD);
+        system->Jacboian(time, Array<real>(N,y), Array<real>(N,yPrime), Jac, CJ);
     }
     
     void DASSL() {
-        ddassl_(System::Residue_Wrapper, Y.N[0], currentTime, Y.pointer(), Z.pointer(), finalTime, info.pointer(), relativeTolerance, absoluteTolerance, outputStatusFlag, dWork.pointer(), dWork.size(), iWork.pointer(), iWork.size(), rPar.pointer(), iPar.pointer(), System::Jacobian_Wrapper);
+        ddassl_(System::Residue_Wrapper, Y.N[0], currentTime, Y.pointer(), Z.pointer(), finalTime, info.pointer(), relativeTolerance, absoluteTolerance, outputStatusFlag, rWork.pointer(), rWork.size(), iWork.pointer(), iWork.size(), rPar.pointer(), iPar.pointer(), System::Jacobian_Wrapper);
+    }
+    
+    void notFirstCall() {
+        // Huh?
+    }
+    
+    void tolerencesAreVectors() {
+        info[1] = 1;
+    }
+    
+    void onlyNextStep() {
+        info[2] = 1;
+    }
+    
+    void dontGoPastEnd(real TSTOP) {
+        info[3] = 1;
+        rWork[0] = TSTOP;
+    }
+    
+    void specifyJacobian() {
+        info[4] = 1;
+        // Specify Jacobian if cond is false!
+    }
+    
+    void banded(int ML, int MU) {
+        info[5] = 1;
+        iWork[0] = ML;
+        iWork[1] = MU;
+    }
+    
+    void maxStep(real hMax) {
+        info[6] = 1;
+        rWork[1] = hMax;
+    }
+    
+    void initialStep(real h0) {
+        info[7] = 1;
+        rWork[2] = h0;
+    }
+    
+    void maxOrd(int MAXORD) {
+        info[8] = 1;
+        iWork[2] = MAXORD;
+    }
+    
+    void nonNegative() {
+        info[9] = 1;
+    }
+    
+    void calcYprime() {
+        info[10] = 1;
+        // Try an initial guess for Yprime=Z
     }
     
 };
