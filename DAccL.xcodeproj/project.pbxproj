@@ -8,9 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		6C4944AF14FD21C200481A91 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6C4944AD14FD21C200481A91 /* InfoPlist.strings */; };
-		6C4944C314FD22B000481A91 /* daux.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 6C4944C014FD229B00481A91 /* daux.o */; };
-		6C4944C414FD22B800481A91 /* ddassl.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 6C4944C114FD229B00481A91 /* ddassl.o */; };
-		6C4944C514FD22BC00481A91 /* dlinpk.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 6C4944C214FD229B00481A91 /* dlinpk.o */; };
 		6C4944C714FD236400481A91 /* Tuple.h in Headers */ = {isa = PBXBuildFile; fileRef = 6C4944C614FD236400481A91 /* Tuple.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6C4944CA14FD23F800481A91 /* Array.h in Headers */ = {isa = PBXBuildFile; fileRef = 6C4944C814FD23B100481A91 /* Array.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6C4944CB14FD23FC00481A91 /* Core.h in Headers */ = {isa = PBXBuildFile; fileRef = 6C4944C914FD23E700481A91 /* Core.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -20,6 +17,9 @@
 		6C4944DD14FD24E300481A91 /* libgcc.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6C4944DB14FD24E300481A91 /* libgcc.a */; };
 		6C4944E014FD250000481A91 /* libgfortran.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6C4944DF14FD250000481A91 /* libgfortran.a */; };
 		6C4944E414FD534C00481A91 /* System.h in Headers */ = {isa = PBXBuildFile; fileRef = 6C4944E314FD534C00481A91 /* System.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		6CD27E05150FBF6A009960B9 /* daux.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 6CD27DFF150FBF5C009960B9 /* daux.o */; };
+		6CD27E06150FBF6C009960B9 /* ddassl.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 6CD27E00150FBF5C009960B9 /* ddassl.o */; };
+		6CD27E07150FBF70009960B9 /* dlinpk.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 6CD27E01150FBF5C009960B9 /* dlinpk.o */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -40,12 +40,6 @@
 		6C4944AC14FD21C200481A91 /* DAccL-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "DAccL-Info.plist"; sourceTree = "<group>"; };
 		6C4944AE14FD21C200481A91 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		6C4944B014FD21C200481A91 /* DAccL-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "DAccL-Prefix.pch"; sourceTree = "<group>"; };
-		6C4944BA14FD228700481A91 /* daux.f */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.fortran; path = daux.f; sourceTree = "<group>"; };
-		6C4944BB14FD228700481A91 /* ddassl.f */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.fortran; path = ddassl.f; sourceTree = "<group>"; };
-		6C4944BC14FD228700481A91 /* dlinpk.f */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.fortran; path = dlinpk.f; sourceTree = "<group>"; };
-		6C4944C014FD229B00481A91 /* daux.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = daux.o; sourceTree = "<group>"; };
-		6C4944C114FD229B00481A91 /* ddassl.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = ddassl.o; sourceTree = "<group>"; };
-		6C4944C214FD229B00481A91 /* dlinpk.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = dlinpk.o; sourceTree = "<group>"; };
 		6C4944C614FD236400481A91 /* Tuple.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Tuple.h; sourceTree = "<group>"; };
 		6C4944C814FD23B100481A91 /* Array.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Array.h; sourceTree = "<group>"; };
 		6C4944C914FD23E700481A91 /* Core.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Core.h; sourceTree = "<group>"; };
@@ -57,6 +51,13 @@
 		6C4944DF14FD250000481A91 /* libgfortran.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgfortran.a; path = "../../../../usr/local/Cellar/gfortran/4.2.4-5666.3/lib/gcc/i686-apple-darwin11/4.2.1/libgfortran.a"; sourceTree = "<group>"; };
 		6C4944E314FD534C00481A91 /* System.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = System.h; sourceTree = "<group>"; };
 		6C4944E514FE7E8100481A91 /* README.markdown */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.markdown; sourceTree = "<group>"; };
+		6CD27DF9150FBED1009960B9 /* makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = makefile; sourceTree = "<group>"; };
+		6CD27DFC150FBF34009960B9 /* daux.f */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.fortran; path = daux.f; sourceTree = "<group>"; };
+		6CD27DFD150FBF34009960B9 /* ddassl.f */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.fortran; path = ddassl.f; sourceTree = "<group>"; };
+		6CD27DFE150FBF34009960B9 /* dlinpk.f */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.fortran; path = dlinpk.f; sourceTree = "<group>"; };
+		6CD27DFF150FBF5C009960B9 /* daux.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = daux.o; sourceTree = "<group>"; };
+		6CD27E00150FBF5C009960B9 /* ddassl.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = ddassl.o; sourceTree = "<group>"; };
+		6CD27E01150FBF5C009960B9 /* dlinpk.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = dlinpk.o; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,9 +67,9 @@
 			files = (
 				6C4944E014FD250000481A91 /* libgfortran.a in Frameworks */,
 				6C4944DD14FD24E300481A91 /* libgcc.a in Frameworks */,
-				6C4944C314FD22B000481A91 /* daux.o in Frameworks */,
-				6C4944C414FD22B800481A91 /* ddassl.o in Frameworks */,
-				6C4944C514FD22BC00481A91 /* dlinpk.o in Frameworks */,
+				6CD27E05150FBF6A009960B9 /* daux.o in Frameworks */,
+				6CD27E06150FBF6C009960B9 /* ddassl.o in Frameworks */,
+				6CD27E07150FBF70009960B9 /* dlinpk.o in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -90,7 +91,6 @@
 				6C4944DF14FD250000481A91 /* libgfortran.a */,
 				6C4944DB14FD24E300481A91 /* libgcc.a */,
 				6C4944DC14FD24E300481A91 /* libgfortranbegin.a */,
-				6C4944B914FD226400481A91 /* DASSL */,
 				6C4944AA14FD21C200481A91 /* DAccL */,
 				6C4944D214FD240F00481A91 /* Test */,
 				6C4944A314FD21C200481A91 /* Frameworks */,
@@ -117,6 +117,8 @@
 		6C4944AA14FD21C200481A91 /* DAccL */ = {
 			isa = PBXGroup;
 			children = (
+				6CD27DFB150FBF34009960B9 /* DASSL */,
+				6CD27DF9150FBED1009960B9 /* makefile */,
 				6C4944C914FD23E700481A91 /* Core.h */,
 				6C4944C814FD23B100481A91 /* Array.h */,
 				6C4944C614FD236400481A91 /* Tuple.h */,
@@ -136,19 +138,6 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		6C4944B914FD226400481A91 /* DASSL */ = {
-			isa = PBXGroup;
-			children = (
-				6C4944C014FD229B00481A91 /* daux.o */,
-				6C4944C114FD229B00481A91 /* ddassl.o */,
-				6C4944C214FD229B00481A91 /* dlinpk.o */,
-				6C4944BA14FD228700481A91 /* daux.f */,
-				6C4944BB14FD228700481A91 /* ddassl.f */,
-				6C4944BC14FD228700481A91 /* dlinpk.f */,
-			);
-			name = DASSL;
-			sourceTree = "<group>";
-		};
 		6C4944D214FD240F00481A91 /* Test */ = {
 			isa = PBXGroup;
 			children = (
@@ -156,6 +145,19 @@
 				6C4944D514FD240F00481A91 /* Test.1 */,
 			);
 			path = Test;
+			sourceTree = "<group>";
+		};
+		6CD27DFB150FBF34009960B9 /* DASSL */ = {
+			isa = PBXGroup;
+			children = (
+				6CD27DFF150FBF5C009960B9 /* daux.o */,
+				6CD27E00150FBF5C009960B9 /* ddassl.o */,
+				6CD27E01150FBF5C009960B9 /* dlinpk.o */,
+				6CD27DFC150FBF34009960B9 /* daux.f */,
+				6CD27DFD150FBF34009960B9 /* ddassl.f */,
+				6CD27DFE150FBF34009960B9 /* dlinpk.f */,
+			);
+			path = DASSL;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

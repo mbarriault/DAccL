@@ -70,6 +70,15 @@ public:
         return *this;
     }
     
+    Array<T>& operator=(const real x) {
+        at(0) = x;
+        return *this;
+    }
+    
+    operator real() {
+        return at(0);
+    }
+    
     Array<T>& operator=(Array<T>&& other) {
         N = other.N;
         own = true;
@@ -242,13 +251,6 @@ public:
         return *this;
     }
     
-    friend Array<T> operator*(real, const Array<T>&);
-//    friend Array<T> operator*(real, const Array<T>);
-    
 };
-
-template<class T> Array<T> operator*(real a, const Array<T>& x) { return x*a; }
-
-//template<class T> Array<T> operator*(real a, const Array<T> x) { return x*a; }
 
 #endif

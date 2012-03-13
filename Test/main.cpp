@@ -10,44 +10,38 @@
 
 #include "System.h"
 
-class testIVP : public System {
-public:
-    testIVP(Tuple N = Tuple(1,1)) : System(N) {
+struct testIVP : public System {
+    real lambda;
+    testIVP() : System(Tuple(1,1)) {
+        lambda = -1.;
         finalTime = 10.;
-        rPar.assign(1);
-        rPar[0] = -1.;
-        const real& lambda = rPar[0];
+
+        Y = 5.;
+        Z = lambda*Y;
         
-        Y(0,0) = 5.;
-        Z(0,0) = lambda*Y(0,0);
-        
-        calcYprime();
         specifyJacobian();
     }
+    
+    void Step() {}
 
-    void Residue(const real& time, const Array<real>& y, const Array<real>& yPrime, Array<real>& residue, int& iRes) {
-        const real& lambda = rPar[0];
-        
-        residue &= yPrime - y*lambda;
+    Function Residue(const real& time, const Function& y, const Function& z, int& iRes) {
+        return z - y*lambda;
     }
     
-    void Jacboian(const real& time, const Array<real>& y, const Array<real>& yPrime, Array<real>& PD, real& CJ) {
-        const real& lambda = rPar[0];
-        
+    Matrix Jacboian(const real& time, const Function& y, const Function& z, real& CJ) {
+        Matrix PD = NewMatrix();
         PD[0] = -lambda + CJ * 1;
-
+        return PD;
     }
 };
 
 int main(int argc, const char * argv[])
 {
-    // insert code here...
     testIVP S;
     S.DASSL();
     
     std::cout << S.Y(0,0) << std::endl;
     std::cout << S.Z(0,0) << std::endl;
-    
     return 0;
 }
 

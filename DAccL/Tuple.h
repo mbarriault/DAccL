@@ -25,6 +25,12 @@ public:
         va_end(args);
     }
     
+    Tuple Double() {
+        Tuple M = *this;
+        FOR(i,size()) M.push_back(at(i));
+        return M;
+    }
+    
     long Si(long a=-1) const {
         if ( a== -1 ) a = (long)size();
         long s = 0;
