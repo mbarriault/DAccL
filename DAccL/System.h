@@ -12,6 +12,9 @@
 #include "Array.h"
 #include <iostream>
 
+#define BLANK_STEP void Step() {;}
+#define BLANK_JACOBIAN Matrix Jacobian(const real&, const Function&, const Function&, real&) { return NewMatrix();}
+
 extern "C" void ddassl_(
                         void (*funcptr)(const real& time, const real y[], const real yPrime[], real residue[], int& iRes, const real rPar[], const int iPar[]),
                         const int& noOfEquations, 
@@ -42,21 +45,21 @@ private:
     intp info;
     realp rWork;
     intp iWork;
-    static System* system;
+    bool hasStarted;
     
     static void Residue_Wrapper(const real& time, const real y[], const real z[], real residue[], int& iRes, const real rPar[], const int iPar[]) {
-        //system->Residue(time, y, yPrime, residue, iRes, rPar, iPar);
+        System* system = (System*)iPar;
         Tuple& N = system->N;
         Function res_ptr(N,residue);
         Function res = system->Residue(time, Function(N,y), Function(N,z), iRes);
         res_ptr &= res;
     }
     static void Jacobian_Wrapper(const real& time, const real y[], const real z[], real PD[], real& CJ, real rPar[], int iPar[]) {
-        //system->Jacobian(time, y, yPrime, PD, CJ, rPar, iPar);
+        System* system = (System*)iPar;
         Tuple& N = system->N;
         Tuple M = N.Double();
         Matrix Jac_ptr(M,PD);
-        Matrix Jac = system->Jacboian(time, Function(N,y), Function(N,z), CJ);
+        Matrix Jac = system->Jacobian(time, Function(N,y), Function(N,z), CJ);
         Jac_ptr &= Jac;
     }
     
@@ -82,7 +85,7 @@ private:
 protected:
     Tuple N;
     System(Tuple N = Tuple(1,1)) : N(N), Y(Function(N)), Z(Function(N)) {
-        System::system = this;
+//        System::system = this;
         info.assign(15,0);
         currentTime = 0;
         finalTime = 0;
@@ -98,7 +101,13 @@ protected:
     }
     
     Matrix NewMatrix() {
-        Tuple M = N.Double();
+        Tuple M;
+        if ( banded() ) {
+            M = N;
+            M.insert(M.begin(), 1+upperBand()+2*lowerBand());
+        }
+        else
+            M = N.Double();
         return Matrix(M);
     }
     
@@ -110,16 +119,14 @@ public:
     real relativeTolerance;
     real absoluteTolerance;
     int outputStatusFlag;
-    realp rPar;
-    intp iPar;
     virtual void Step() = 0;
     virtual Function Residue(const real& time, const Function& y, const Function& yPrime, int& iRes) = 0;
-    virtual Matrix Jacboian(const real& time, const Function& y, const Function& yPrime, real& CJ) = 0;
+    virtual Matrix Jacobian(const real& time, const Function& y, const Function& yPrime, real& CJ) = 0;
     
     void DASSL() {
         do {
             Step();
-            ddassl_(System::Residue_Wrapper, Y.N[0], currentTime, Y.pointer(), Z.pointer(), finalTime, &info.front(), relativeTolerance, absoluteTolerance, outputStatusFlag, &rWork.front(), rWork.size(), &iWork.front(), iWork.size(), &rPar.front(), &iPar.front(), System::Jacobian_Wrapper);
+            ddassl_(System::Residue_Wrapper, Y.N.Pr(), currentTime, Y.pointer(), Z.pointer(), finalTime, &info.front(), relativeTolerance, absoluteTolerance, outputStatusFlag, &rWork.front(), rWork.size(), &iWork.front(), iWork.size(), 0, (int*)this, System::Jacobian_Wrapper);
             if ( not iteratingSlowly() )
                 break;
         } while ( currentTime < finalTime );
@@ -178,7 +185,11 @@ public:
         setBanded(M.first, M.second);
     }
     
-    std::pair<int, int> banded() {
+    bool banded() {
+        return info[5];
+    }
+    
+    std::pair<int, int> getBands() {
         if ( info[5] )
             return std::pair<int,int>(iWork[0], iWork[1]);
         else
@@ -199,6 +210,24 @@ public:
             return -1;
     }
     
+    int bandWidth() {
+        if ( info[5] )
+            return iWork[0]+iWork[1];
+        else
+            return -1;
+    }
+    
+    int maxBand() {
+        if ( info[5] ) {
+            if ( iWork[0] > iWork[1] )
+                return iWork[0];
+            else
+                return iWork[1];
+        }
+        else
+            return -1;
+    }
+    
     void setMaxStep(real hMax) {
         info[6] = 1;
         rWork[1] = hMax;
@@ -209,6 +238,10 @@ public:
             return rWork[1];
         else
             return 0.;
+    }
+    
+    real timeStep() {
+        return rWork[7];
     }
     
     void setInitialStep(real h0) {
@@ -253,8 +286,6 @@ public:
     }
     
 };
-
-System* System::system = 0;
 
 #endif
 
@@ -452,3 +483,18 @@ System* System::system = 0;
 //C                           +2*(NEQ/(ML+MU+1)+1)
 //C               for the banded finite-difference-generated JACOBIAN case
 //C               (when INFO(4)=0 and INFO(5)=1)
+//C               *** INFO(7)=0 -- Full (dense) matrix ***
+//C                   Give PD a first dimension of NEQ.
+//C                   When you evaluate the (non-zero) partial derivative
+//C                   of equation I with respect to variable J, you must
+//C                   store it in PD according to
+//C                   PD(I,J) = "DG(I)/DY(J)+CJ*DG(I)/DYPRIME(J)"
+//C               *** INFO(7)=1 -- Banded JACOBIAN with ML lower and MU
+//C                   upper diagonal bands (refer to INFO(7) description
+//                                          C                   of ML and MU) ***
+//C                   Give PD a first dimension of 2*ML+MU+1.
+//C                   when you evaluate the (non-zero) partial derivative
+//C                   of equation I with respect to variable J, you must
+//C                   store it in PD according to
+//C                   IROW = I - J + ML + MU + 1
+//C                   PD(IROW,J) = "DG(I)/DY(J)+CJ*DG(I)/DYPRIME(J)"

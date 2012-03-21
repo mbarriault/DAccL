@@ -11,13 +11,14 @@
 #ifndef DAccL_Core_h
 #define DAccL_Core_h
 
-#define FOR(n,N) for ( long n=0; n<N; n++ )
-#define PFOR(n,N) _Pragma("omp parallel for") for ( long n=0; n<N; n++ )
-#define FRO(n,i,N) for ( long n=i; n<N; n++ )
-#define PFRO(n,i,N) _Pragma("omp parallel for") for ( long n=i; n<N; n++ )
-#define LOOP(N) for ( long __n=0; __n<N; __n++ )
+#define FOR(n,N) for ( register long n=0; n<N; n++ )
+#define PFOR(n,N) _Pragma("omp parallel for") for ( register long n=0; n<N; n++ )
+#define FRO(n,i,N) for ( register long n=i; n<N; n++ )
+#define PFRO(n,i,N) _Pragma("omp parallel for") for ( register long n=i; n<N; n++ )
+#define LOOP(N) for ( register long __n=0; __n<N; __n++ )
+#define self (*this)
 
-typedef double real;
+using real = double;
 
 #include <iomanip>
 #include <sstream>
@@ -113,5 +114,9 @@ std::string pad(real t, real T, real dt) {
     return out.str();
 }
 
+long delta(long i, long j) {
+    if ( i==j ) return 1;
+    else return 0;
+}
 
 #endif

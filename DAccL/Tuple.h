@@ -16,7 +16,7 @@
 
 class Tuple : public std::vector<long> {
 public:
-    Tuple() {}
+    Tuple() = default;
     
     Tuple(long n, ...) {
         va_list args;
@@ -26,7 +26,7 @@ public:
     }
     
     Tuple Double() {
-        Tuple M = *this;
+        Tuple M = self;
         FOR(i,size()) M.push_back(at(i));
         return M;
     }

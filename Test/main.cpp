@@ -18,20 +18,13 @@ struct testIVP : public System {
 
         Y = 5.;
         Z = lambda*Y;
-        
-        specifyJacobian();
     }
     
-    void Step() {}
+    BLANK_STEP
+    BLANK_JACOBIAN
 
     Function Residue(const real& time, const Function& y, const Function& z, int& iRes) {
         return z - y*lambda;
-    }
-    
-    Matrix Jacboian(const real& time, const Function& y, const Function& z, real& CJ) {
-        Matrix PD = NewMatrix();
-        PD[0] = -lambda + CJ * 1;
-        return PD;
     }
 };
 
@@ -39,6 +32,9 @@ int main(int argc, const char * argv[])
 {
     testIVP S;
     S.DASSL();
+    
+    std::cout << "This program should output\n    0.000227006\n    -0.000227006\n" << std::endl;
+
     
     std::cout << S.Y(0,0) << std::endl;
     std::cout << S.Z(0,0) << std::endl;
