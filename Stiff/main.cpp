@@ -9,6 +9,8 @@
 #include <iostream>
 #include "System.h"
 
+using namespace DACCL;
+
 struct Stiff : public System {
     real lambda;
     Stiff(real lambda) : System(Tuple(1,3)), lambda(lambda) {

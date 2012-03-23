@@ -35,258 +35,262 @@ extern "C" void ddassl_(
                         void (*jacobian)(const real& time, const real y[], const real yPrime[], real PD[], real& CJ, real rPar[], int iPar[])
                         );
 
-typedef Array<real> Function;
-typedef Array<real> Matrix;
-typedef std::vector<real> realp;
-typedef std::vector<int> intp;
+namespace DACCL {
 
-class System {
-private:
-    intp info;
-    realp rWork;
-    intp iWork;
-    bool hasStarted;
-    
-    static void Residue_Wrapper(const real& time, const real y[], const real z[], real residue[], int& iRes, const real rPar[], const int iPar[]) {
-        System* system = (System*)iPar;
-        Tuple& N = system->N;
-        Function res_ptr(N,residue);
-        Function res = system->Residue(time, Function(N,y), Function(N,z), iRes);
-        res_ptr &= res;
-    }
-    
-    static void Jacobian_Wrapper(const real& time, const real y[], const real z[], real PD[], real& CJ, real rPar[], int iPar[]) {
-        System* system = (System*)iPar;
-        Tuple& N = system->N;
-        Tuple M = N.Double();
-        Matrix Jac_ptr(M,PD);
-        Matrix Jac = system->Jacobian(time, Function(N,y), Function(N,z), CJ);
-        Jac_ptr &= Jac;
-    }
-    
-    void rework() {
-        int MAXORD = 5;
-        if ( info[8] ) MAXORD = iWork[2];
-        int NEQ = N[0];
-        int ML = 0;
-        int MU = 0;
-        if ( info[5] ) {
-            ML = iWork[0];
-            MU = iWork[1];
+    typedef Array<real> Function;
+    typedef Array<real> Matrix;
+    typedef std::vector<real> realp;
+    typedef std::vector<int> intp;
+
+    class System {
+    private:
+        intp info;
+        realp rWork;
+        intp iWork;
+        bool hasStarted;
+        
+        static void Residue_Wrapper(const real& time, const real y[], const real z[], real residue[], int& iRes, const real rPar[], const int iPar[]) {
+            System* system = (System*)iPar;
+            Tuple& N = system->N;
+            Function res_ptr(N,residue);
+            Function res = system->Residue(time, Function(N,y), Function(N,z), iRes);
+            res_ptr &= res;
         }
         
-        if ( info[5] and info[4] ) // LRW .GE. 40+(MAXORD+4)*NEQ+(2*ML+MU+1)*NEQ
-            rWork.assign( 40 + (MAXORD+4)*NEQ + (2*ML+MU+1)*NEQ, 0. );
-        else if ( info[5] ) // LRW .GE. 40+(MAXORD+4)*NEQ+(2*ML+MU+1)*NEQ+2*(NEQ/(ML+MU+1)+1)
-            rWork.assign( 40 + (MAXORD+4)*NEQ + (2*ML+MU+1)*NEQ + 2*(NEQ/(ML+MU+1)+1), 0. );
-        else // LRW .GE. 40+(MAXORD+4)*NEQ+NEQ**2
-            rWork.assign( 40 + (MAXORD+4)*NEQ + NEQ*NEQ, 0. );
-    }
-    
-protected:
-    Tuple N;
-    System(Tuple N = Tuple(1,1)) : N(N), Y(Function(N)), Z(Function(N)) {
-//        System::system = this;
-        info.assign(15,0);
-        currentTime = 0;
-        finalTime = 0;
-        relativeTolerance = 1e-6;
-        absoluteTolerance = 0.;
-        outputStatusFlag = 0;
-        iWork.assign(20 + N[0], 0);
-        rework();
-    }
-    
-    Function NewFunction() {
-        return Function(N);
-    }
-    
-    Matrix NewMatrix() {
-        Tuple M;
-        if ( banded() ) {
-            M = N;
-            M.insert(M.begin(), 1+upperBand()+2*lowerBand());
+        static void Jacobian_Wrapper(const real& time, const real y[], const real z[], real PD[], real& CJ, real rPar[], int iPar[]) {
+            System* system = (System*)iPar;
+            Tuple& N = system->N;
+            Tuple M = N.Double();
+            Matrix Jac_ptr(M,PD);
+            Matrix Jac = system->Jacobian(time, Function(N,y), Function(N,z), CJ);
+            Jac_ptr &= Jac;
         }
-        else
-            M = N.Double();
-        return Matrix(M);
-    }
-    
-public:
-    Function Y;
-    Function Z; // Z = D(Y)(t)
-    real currentTime;
-    real finalTime;
-    real relativeTolerance;
-    real absoluteTolerance;
-    int outputStatusFlag;
-    virtual void Step() = 0;
-    virtual Function Residue(const real& time, const Function& y, const Function& yPrime, int& iRes) = 0;
-    virtual Matrix Jacobian(const real& time, const Function& y, const Function& yPrime, real& CJ) = 0;
-    
-    void DASSL() {
-        do {
+        
+        void rework() {
+            int MAXORD = 5;
+            if ( info[8] ) MAXORD = iWork[2];
+            int NEQ = N[0];
+            int ML = 0;
+            int MU = 0;
+            if ( info[5] ) {
+                ML = iWork[0];
+                MU = iWork[1];
+            }
+            
+            if ( info[5] and info[4] ) // LRW .GE. 40+(MAXORD+4)*NEQ+(2*ML+MU+1)*NEQ
+                rWork.assign( 40 + (MAXORD+4)*NEQ + (2*ML+MU+1)*NEQ, 0. );
+            else if ( info[5] ) // LRW .GE. 40+(MAXORD+4)*NEQ+(2*ML+MU+1)*NEQ+2*(NEQ/(ML+MU+1)+1)
+                rWork.assign( 40 + (MAXORD+4)*NEQ + (2*ML+MU+1)*NEQ + 2*(NEQ/(ML+MU+1)+1), 0. );
+            else // LRW .GE. 40+(MAXORD+4)*NEQ+NEQ**2
+                rWork.assign( 40 + (MAXORD+4)*NEQ + NEQ*NEQ, 0. );
+        }
+        
+    protected:
+        Tuple N;
+        System(Tuple N = Tuple(1,1)) : N(N), Y(Function(N)), Z(Function(N)) {
+    //        System::system = this;
+            info.assign(15,0);
+            currentTime = 0;
+            finalTime = 0;
+            relativeTolerance = 1e-6;
+            absoluteTolerance = 0.;
+            outputStatusFlag = 0;
+            iWork.assign(20 + N[0], 0);
+            rework();
+        }
+        
+        Function NewFunction() {
+            return Function(N);
+        }
+        
+        Matrix NewMatrix() {
+            Tuple M;
+            if ( banded() ) {
+                M = N;
+                M.insert(M.begin(), 1+upperBand()+2*lowerBand());
+            }
+            else
+                M = N.Double();
+            return Matrix(M);
+        }
+        
+    public:
+        Function Y;
+        Function Z; // Z = D(Y)(t)
+        real currentTime;
+        real finalTime;
+        real relativeTolerance;
+        real absoluteTolerance;
+        int outputStatusFlag;
+        virtual void Step() = 0;
+        virtual Function Residue(const real& time, const Function& y, const Function& yPrime, int& iRes) = 0;
+        virtual Matrix Jacobian(const real& time, const Function& y, const Function& yPrime, real& CJ) = 0;
+        
+        void DASSL() {
+            do {
+                Step();
+                ddassl_(System::Residue_Wrapper, Y.N.Pr(), currentTime, Y.pointer(), Z.pointer(), finalTime, &info.front(), relativeTolerance, absoluteTolerance, outputStatusFlag, &rWork.front(), rWork.size(), &iWork.front(), iWork.size(), 0, (int*)this, System::Jacobian_Wrapper);
+                if ( not iteratingSlowly() )
+                    break;
+            } while ( currentTime < finalTime );
             Step();
-            ddassl_(System::Residue_Wrapper, Y.N.Pr(), currentTime, Y.pointer(), Z.pointer(), finalTime, &info.front(), relativeTolerance, absoluteTolerance, outputStatusFlag, &rWork.front(), rWork.size(), &iWork.front(), iWork.size(), 0, (int*)this, System::Jacobian_Wrapper);
-            if ( not iteratingSlowly() )
-                break;
-        } while ( currentTime < finalTime );
-        Step();
-    }
-    
-    void notFirstCall() {
-        // Huh?
-    }
-    
-    void tolerencesAreVectors() {
-        info[1] = 1;
-    }
-    
-    bool areTolerencesVectors() {
-        return info[1];
-    }
-    
-    void iterateSlowly() {
-        info[2] = 1;
-    }
-    
-    bool iteratingSlowly() {
-        return info[2];
-    }
-    
-    void setStopping(real TSTOP) {
-        info[3] = 1;
-        rWork[0] = TSTOP;
-    }
-    
-    real stoppingAt() {
-        if ( info[3] )
-            return rWork[0];
-        else
-            return 0.;
-    }
-    
-    void specifyJacobian() {
-        info[4] = 1;
-        rework();
-    }
-    
-    bool needJacobian() {
-        return info[4];
-    }
-    
-    void setBanded(int ML, int MU) {
-        info[5] = 1;
-        iWork[0] = ML;
-        iWork[1] = MU;
-        rework();
-    }
-    
-    void setBanded(std::pair<int,int> M) {
-        setBanded(M.first, M.second);
-    }
-    
-    bool banded() {
-        return info[5];
-    }
-    
-    std::pair<int, int> getBands() {
-        if ( info[5] )
-            return std::pair<int,int>(iWork[0], iWork[1]);
-        else
-            return std::pair<int,int>(-1, -1);
-    }
-    
-    int lowerBand() {
-        if ( info[5] )
-            return iWork[0];
-        else
-            return -1;
-    }
-    
-    int upperBand() {
-        if ( info[5] )
-            return iWork[1];
-        else
-            return -1;
-    }
-    
-    int bandWidth() {
-        if ( info[5] )
-            return iWork[0]+iWork[1];
-        else
-            return -1;
-    }
-    
-    int maxBand() {
-        if ( info[5] ) {
-            if ( iWork[0] > iWork[1] )
+        }
+        
+        void notFirstCall() {
+            // Huh?
+        }
+        
+        void tolerencesAreVectors() {
+            info[1] = 1;
+        }
+        
+        bool areTolerencesVectors() {
+            return info[1];
+        }
+        
+        void iterateSlowly() {
+            info[2] = 1;
+        }
+        
+        bool iteratingSlowly() {
+            return info[2];
+        }
+        
+        void setStopping(real TSTOP) {
+            info[3] = 1;
+            rWork[0] = TSTOP;
+        }
+        
+        real stoppingAt() {
+            if ( info[3] )
+                return rWork[0];
+            else
+                return 0.;
+        }
+        
+        void specifyJacobian() {
+            info[4] = 1;
+            rework();
+        }
+        
+        bool needJacobian() {
+            return info[4];
+        }
+        
+        void setBanded(int ML, int MU) {
+            info[5] = 1;
+            iWork[0] = ML;
+            iWork[1] = MU;
+            rework();
+        }
+        
+        void setBanded(std::pair<int,int> M) {
+            setBanded(M.first, M.second);
+        }
+        
+        bool banded() {
+            return info[5];
+        }
+        
+        std::pair<int, int> getBands() {
+            if ( info[5] )
+                return std::pair<int,int>(iWork[0], iWork[1]);
+            else
+                return std::pair<int,int>(-1, -1);
+        }
+        
+        int lowerBand() {
+            if ( info[5] )
                 return iWork[0];
             else
-                return iWork[1];
+                return -1;
         }
-        else
-            return -1;
-    }
-    
-    void setMaxStep(real hMax) {
-        info[6] = 1;
-        rWork[1] = hMax;
-    }
-    
-    real maxStep() {
-        if ( info[6] )
-            return rWork[1];
-        else
-            return 0.;
-    }
-    
-    real timeStep() {
-        return rWork[7];
-    }
-    
-    void setInitialStep(real h0) {
-        info[7] = 1;
-        rWork[2] = h0;
-    }
-    
-    bool initialStep() {
-        if ( info[7] )
-            return rWork[2];
-        else
-            return 0.;
-    }
-    
-    void setMaxOrd(int MAXORD) {
-        info[8] = 1;
-        iWork[2] = MAXORD;
-        rework();
-    }
-    
-    bool maxOrd() {
-        if ( info[8] )
-            return iWork[2];
-        else
-            return 5;
-    }
-    
-    void nonNegative() {
-        info[9] = 1;
-    }
-    
-    bool isNonNegative() {
-        return info[9];
-    }
-    
-    void calcYprime() {
-        info[10] = 1;
-    }
-    
-    bool calcingYprime() {
-        return info[10];
-    }
-    
-};
+        
+        int upperBand() {
+            if ( info[5] )
+                return iWork[1];
+            else
+                return -1;
+        }
+        
+        int bandWidth() {
+            if ( info[5] )
+                return iWork[0]+iWork[1];
+            else
+                return -1;
+        }
+        
+        int maxBand() {
+            if ( info[5] ) {
+                if ( iWork[0] > iWork[1] )
+                    return iWork[0];
+                else
+                    return iWork[1];
+            }
+            else
+                return -1;
+        }
+        
+        void setMaxStep(real hMax) {
+            info[6] = 1;
+            rWork[1] = hMax;
+        }
+        
+        real maxStep() {
+            if ( info[6] )
+                return rWork[1];
+            else
+                return 0.;
+        }
+        
+        real timeStep() {
+            return rWork[7];
+        }
+        
+        void setInitialStep(real h0) {
+            info[7] = 1;
+            rWork[2] = h0;
+        }
+        
+        bool initialStep() {
+            if ( info[7] )
+                return rWork[2];
+            else
+                return 0.;
+        }
+        
+        void setMaxOrd(int MAXORD) {
+            info[8] = 1;
+            iWork[2] = MAXORD;
+            rework();
+        }
+        
+        bool maxOrd() {
+            if ( info[8] )
+                return iWork[2];
+            else
+                return 5;
+        }
+        
+        void nonNegative() {
+            info[9] = 1;
+        }
+        
+        bool isNonNegative() {
+            return info[9];
+        }
+        
+        void calcYprime() {
+            info[10] = 1;
+        }
+        
+        bool calcingYprime() {
+            return info[10];
+        }
+        
+    };
+
+}
 
 #endif
 
