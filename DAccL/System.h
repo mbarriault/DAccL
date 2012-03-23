@@ -54,6 +54,7 @@ private:
         Function res = system->Residue(time, Function(N,y), Function(N,z), iRes);
         res_ptr &= res;
     }
+    
     static void Jacobian_Wrapper(const real& time, const real y[], const real z[], real PD[], real& CJ, real rPar[], int iPar[]) {
         System* system = (System*)iPar;
         Tuple& N = system->N;

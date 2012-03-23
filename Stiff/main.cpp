@@ -17,10 +17,11 @@ struct Stiff : public System {
         // y3(0) = z2(0) = lambda^2 (1 + exp(-lambda) + 4exp(-2lambda)) / (2+exp(-lambda)) - pi^2
         // z3(0) = -lambda^3 (1 - exp(-lambda) - 8exp(-2lambda)) / (2+exp(-lambda))
         real elambda = exp(-lambda);
-        Y(0) = (1 + elambda + elambda*elambda)/(2+elambda) + 1;
-        Y(1) = Z(0) = -lambda * (1-elambda-2*elambda)/(2+elambda);
-        Y(2) = Z(1) = lambda*lambda * (1+elambda+4*elambda)/(2+elambda) - M_PI*M_PI;
-        Z(2) = -lambda*lambda*lambda * (1-elambda-8*elambda)/(2+elambda);
+        real e2lambda = exp(-2*lambda);
+        Y(0) = (1+elambda+e2lambda)/(2+elambda) + 1;
+        Y(1) = Z(0) = -lambda * (1-elambda-2*e2lambda)/(2+elambda);
+        Y(2) = Z(1) = lambda*lambda * (1+elambda+4*e2lambda)/(2+elambda) - M_PI*M_PI;
+        Z(2) = -lambda*lambda*lambda * (1-elambda-8*e2lambda)/(2+elambda);
         finalTime = 1;
         specifyJacobian();
         iterateSlowly();

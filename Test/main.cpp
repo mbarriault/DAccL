@@ -13,11 +13,12 @@
 struct testIVP : public System {
     real lambda;
     testIVP() : System(Tuple(1,1)) {
-        lambda = -1.;
+        lambda = -100.;
         finalTime = 10.;
 
         Y = 5.;
         Z = lambda*Y;
+        iterateSlowly();
     }
     
     BLANK_STEP

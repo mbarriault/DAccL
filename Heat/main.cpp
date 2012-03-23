@@ -40,6 +40,7 @@ struct Heat : public System {
 //        setMaxOrd(2);
         setBanded(1, 1);
         specifyJacobian();
+        nonNegative();
     }
     
     void Step() {
