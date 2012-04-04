@@ -12,9 +12,6 @@
 #include "Array.h"
 #include <iostream>
 
-#define BLANK_STEP void Step() {;}
-#define BLANK_JACOBIAN Matrix Jacobian(const real&, const Function&, const Function&, real&) { return NewMatrix();}
-
 extern "C" void ddassl_(
                         void (*funcptr)(const real& time, const real y[], const real yPrime[], real residue[], int& iRes, const real rPar[], const int iPar[]),
                         const int& noOfEquations, 
@@ -48,12 +45,15 @@ namespace DACCL {
         realp rWork;
         intp iWork;
         bool hasStarted;
+        bool jacobianSet;
+        bool stepSet;
         
         static void Residue_Wrapper(const real& time, const real y[], const real z[], real residue[], int& iRes, const real rPar[], const int iPar[]) {
             System* system = (System*)iPar;
             Tuple& N = system->N;
             Function res_ptr(N,residue);
-            Function res = system->Residue(time, Function(N,y), Function(N,z), iRes);
+            // Do something with iRes here
+            Function res = system->Residue(time, Function(N,y), Function(N,z));
             res_ptr &= res;
         }
         
@@ -67,35 +67,32 @@ namespace DACCL {
         }
         
         void rework() {
-            int MAXORD = 5;
-            if ( info[8] ) MAXORD = iWork[2];
-            int NEQ = N[0];
-            int ML = 0;
-            int MU = 0;
-            if ( info[5] ) {
-                ML = iWork[0];
-                MU = iWork[1];
-            }
+            int MAXORD = maxOrd();
+            int NEQ = N.Pr();
+            int ML = lowerBand();
+            int MU = upperBand();
             
-            if ( info[5] and info[4] ) // LRW .GE. 40+(MAXORD+4)*NEQ+(2*ML+MU+1)*NEQ
-                rWork.assign( 40 + (MAXORD+4)*NEQ + (2*ML+MU+1)*NEQ, 0. );
-            else if ( info[5] ) // LRW .GE. 40+(MAXORD+4)*NEQ+(2*ML+MU+1)*NEQ+2*(NEQ/(ML+MU+1)+1)
-                rWork.assign( 40 + (MAXORD+4)*NEQ + (2*ML+MU+1)*NEQ + 2*(NEQ/(ML+MU+1)+1), 0. );
+            if ( banded() and needJacobian() ) // LRW .GE. 40+(MAXORD+4)*NEQ+(2*ML+MU+1)*NEQ
+                rWork.resize( 40 + (MAXORD+4)*NEQ + (2*ML+MU+1)*NEQ);
+            else if ( banded() ) // LRW .GE. 40+(MAXORD+4)*NEQ+(2*ML+MU+1)*NEQ+2*(NEQ/(ML+MU+1)+1)
+                rWork.resize( 40 + (MAXORD+4)*NEQ + (2*ML+MU+1)*NEQ + 2*(NEQ/(ML+MU+1)+1));
             else // LRW .GE. 40+(MAXORD+4)*NEQ+NEQ**2
-                rWork.assign( 40 + (MAXORD+4)*NEQ + NEQ*NEQ, 0. );
+                rWork.resize( 40 + (MAXORD+4)*NEQ + NEQ*NEQ);
         }
         
     protected:
         Tuple N;
-        System(Tuple N = Tuple(1,1)) : N(N), Y(Function(N)), Z(Function(N)) {
-    //        System::system = this;
+        System(Tuple N = Tuple(1,1)) : N(N), Y(Function(N)), Z(Function(N)), YPrime(Z) {
+            jacobianSet = true;
+            stepSet = true;
+            hasStarted = false;
             info.assign(15,0);
             currentTime = 0;
             finalTime = 0;
             relativeTolerance = 1e-6;
-            absoluteTolerance = 0.;
+            absoluteTolerance = 1e-6;
             outputStatusFlag = 0;
-            iWork.assign(20 + N[0], 0);
+            iWork.assign(20 + N.Pr(), 0);
             rework();
         }
         
@@ -117,23 +114,37 @@ namespace DACCL {
     public:
         Function Y;
         Function Z; // Z = D(Y)(t)
+        Function& YPrime;
         real currentTime;
         real finalTime;
         real relativeTolerance;
         real absoluteTolerance;
         int outputStatusFlag;
-        virtual void Step() = 0;
-        virtual Function Residue(const real& time, const Function& y, const Function& yPrime, int& iRes) = 0;
-        virtual Matrix Jacobian(const real& time, const Function& y, const Function& yPrime, real& CJ) = 0;
+        virtual Function Residue(const real& time, const Function& y, const Function& yPrime) = 0;
+#define BLANK_STEP void Step() { stepSet=false;}
+        virtual BLANK_STEP;
+#define BLANK_JACOBIAN Matrix Jacobian(const real&, const Function&, const Function&, real&) { jacobianSet=false; return NewMatrix();}
+        virtual BLANK_JACOBIAN;
         
         void DASSL() {
+            Step();
+            Jacobian(currentTime, Y, Z, finalTime);
+            if ( jacobianSet ) specifyJacobian();
+            if ( stepSet ) iterateSlowly();
             do {
-                Step();
-                ddassl_(System::Residue_Wrapper, Y.N.Pr(), currentTime, Y.pointer(), Z.pointer(), finalTime, &info.front(), relativeTolerance, absoluteTolerance, outputStatusFlag, &rWork.front(), rWork.size(), &iWork.front(), iWork.size(), 0, (int*)this, System::Jacobian_Wrapper);
+                DASSLtick();
                 if ( not iteratingSlowly() )
                     break;
+                Step();
             } while ( currentTime < finalTime );
-            Step();
+        }
+        
+        void operator()() {
+            DASSL();
+        }
+        
+        void DASSLtick() {
+            ddassl_(System::Residue_Wrapper, Y.N.Pr(), currentTime, Y.pointer(), Z.pointer(), finalTime, &info.front(), relativeTolerance, absoluteTolerance, outputStatusFlag, &rWork.front(), rWork.size(), &iWork.front(), iWork.size(), 0, (int*)this, System::Jacobian_Wrapper);
         }
         
         void notFirstCall() {
@@ -236,6 +247,14 @@ namespace DACCL {
             rWork[1] = hMax;
         }
         
+        void setH(real hMax) {
+            setMaxStep(hMax);
+        }
+        
+        void seth(real hMax) {
+            setMaxStep(hMax);
+        }
+        
         real maxStep() {
             if ( info[6] )
                 return rWork[1];
@@ -244,7 +263,7 @@ namespace DACCL {
         }
         
         real timeStep() {
-            return rWork[7];
+            return rWork[6];
         }
         
         void setInitialStep(real h0) {
@@ -265,7 +284,7 @@ namespace DACCL {
             rework();
         }
         
-        bool maxOrd() {
+        long maxOrd() {
             if ( info[8] )
                 return iWork[2];
             else
@@ -288,6 +307,13 @@ namespace DACCL {
             return info[10];
         }
         
+        long resCalls() {
+            return iWork[11];
+        }
+        
+        long jacCalls() {
+            return iWork[12];
+        }
     };
 
 }

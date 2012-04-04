@@ -13,9 +13,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "6C625AA3151A55DE000F22B5"
-               BuildableName = "Stiff"
-               BlueprintName = "Stiff"
+               BlueprintIdentifier = "6C0C77B51528AF9B00535430"
+               BuildableName = "Wave"
+               BlueprintName = "Wave"
                ReferencedContainer = "container:DAccL.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -31,9 +31,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "6C625AA3151A55DE000F22B5"
-            BuildableName = "Stiff"
-            BlueprintName = "Stiff"
+            BlueprintIdentifier = "6C0C77B51528AF9B00535430"
+            BuildableName = "Wave"
+            BlueprintName = "Wave"
             ReferencedContainer = "container:DAccL.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -50,9 +50,9 @@
       <BuildableProductRunnable>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "6C625AA3151A55DE000F22B5"
-            BuildableName = "Stiff"
-            BlueprintName = "Stiff"
+            BlueprintIdentifier = "6C0C77B51528AF9B00535430"
+            BuildableName = "Wave"
+            BlueprintName = "Wave"
             ReferencedContainer = "container:DAccL.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -68,9 +68,9 @@
       <BuildableProductRunnable>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "6C625AA3151A55DE000F22B5"
-            BuildableName = "Stiff"
-            BlueprintName = "Stiff"
+            BlueprintIdentifier = "6C0C77B51528AF9B00535430"
+            BuildableName = "Wave"
+            BlueprintName = "Wave"
             ReferencedContainer = "container:DAccL.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

@@ -133,7 +133,7 @@ namespace DACCL {
         T& operator()(long a, ...) {
             va_list vl;
             va_start(vl, a);
-            Tuple o(N.size());
+            Tuple o = N;
             o[0] = a;
             FRO(i,1,o.size()) {
                 o[i] = va_arg(vl, long);
@@ -145,7 +145,7 @@ namespace DACCL {
         T operator()(long a, ...) const {
             va_list vl;
             va_start(vl, a);
-            Tuple o(N.size());
+            Tuple o = N;
             o[0] = a;
             FRO(i,1,o.size()) {
                 o[i] = va_arg(vl, long);

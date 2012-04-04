@@ -9,23 +9,20 @@
 #include <iostream>
 #include "System.h"
 
+using namespace DACCL;
+
 struct Sample : public System {
-    Sample() : System(Tuple(1,1)) {
+    Sample(real hMax=0) : System(Tuple(1,1)) {
         Y(0) = 1;
         currentTime = 1;
         finalTime = 25;
         specifyJacobian();
         iterateSlowly();
-        setMaxOrd(2);
+        setMaxOrd(5);
+        if ( hMax) setMaxStep(hMax/2);
     }
     
-    void Step() {
-        double e = fabs(Y(0) - 1./currentTime);
-        int p = int(log(e)/log(timeStep())+0.5); // 0.5 so number is rounded, not floored
-        std::cout << currentTime << "\t" << Y(0) << "\t" << e << "\t" << timeStep() << "\t" << p << std::endl;
-    }
-    
-    Function Residue(const real& t, const Function& y, const Function& z, int& iRes) {
+    Function Residue(const real& t, const Function& y, const Function& z) {
         // z + 5ty^2 - 5/t + 1/t^2
         auto R = NewFunction();
         R(0) = z(0) + 5*t*y(0)*y(0) - 5./t + 1./(t*t);
@@ -41,8 +38,15 @@ struct Sample : public System {
 
 int main(int argc, const char * argv[])
 {
-    Sample sample;
-    sample.DASSL();
+    Sample sample1;
+    sample1();
+    Sample sample2(sample1.timeStep());
+    sample2();
+    real err1 = fabs(sample1.Y(0)-1./sample1.currentTime);
+    real err2 = fabs(sample2.Y(0)-1./sample1.currentTime);
+    real h1 = sample1.timeStep();
+    real h2 = sample2.timeStep();
+    std::cout << log(err1/err2)/log(h1/h2) << std::endl; // Should be close to MAXORD
     return 0;
 }
 

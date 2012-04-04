@@ -7,24 +7,21 @@
 //
 
 #include <iostream>
-
 #include "System.h"
+
+using namespace DACCL;
 
 struct testIVP : public System {
     real lambda;
     testIVP() : System(Tuple(1,1)) {
-        lambda = -100.;
+        lambda = -1.;
         finalTime = 10.;
 
-        Y = 5.;
-        Z = lambda*Y;
-        iterateSlowly();
+        Y(0) = 5.;
+        Z(0) = lambda*Y(0);
     }
     
-    BLANK_STEP
-    BLANK_JACOBIAN
-
-    Function Residue(const real& time, const Function& y, const Function& z, int& iRes) {
+    Function Residue(const real& time, const Function& y, const Function& z) {
         return z - y*lambda;
     }
 };
